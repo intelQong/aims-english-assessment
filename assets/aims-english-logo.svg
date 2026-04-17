@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 180" role="img" aria-labelledby="title desc">
+  <title id="title">AIMS English Logo</title>
+  <desc id="desc">AIMS English wordmark with shield icon.</desc>
+
+  <defs>
+    <style>
+      .gold { fill: #d1a02a; }
+      .teal { fill: #0f7a93; }
+      .white { fill: #ffffff; }
+      .aims { font-family: Georgia, 'Times New Roman', serif; font-size: 112px; font-weight: 700; letter-spacing: 2px; }
+      .english { font-family: Georgia, 'Times New Roman', serif; font-size: 86px; font-weight: 700; letter-spacing: 8px; }
+      .shieldText { font-family: Georgia, 'Times New Roman', serif; font-size: 40px; font-weight: 700; letter-spacing: 1px; }
+    </style>
+  </defs>
+
+  <!-- ribbons -->
+  <path class="gold" d="M6 107 L64 98 L64 130 L34 137 L39 147 L0 154 L8 132 L0 112 Z"/>
+  <path class="gold" d="M250 98 L309 107 L315 112 L308 132 L316 154 L278 147 L282 137 L252 130 Z"/>
+
+  <!-- shield -->
+  <path class="teal" d="M72 48 C84 48 90 42 90 34 H226 C226 42 232 48 244 48 V113 C244 166 202 173 167 176 C133 173 72 163 72 113 Z"/>
+
+  <!-- cap -->
+  <polygon class="white" points="140,66 168,54 196,66 168,77"/>
+  <rect class="white" x="139" y="68" width="3" height="12"/>
+  <path class="white" d="M151 77 Q168 85 185 77 V84 Q168 92 151 84 Z"/>
+
+  <!-- book -->
+  <path class="white" d="M96 108 Q132 84 163 126 Q131 117 96 121 Z"/>
+  <path class="white" d="M238 108 Q202 84 171 126 Q203 117 238 121 Z"/>
+  <path class="white" d="M118 108 Q143 86 166 126" stroke="#0f7a93" stroke-width="2" fill="none"/>
+  <path class="white" d="M216 108 Q191 86 168 126" stroke="#0f7a93" stroke-width="2" fill="none"/>
+  <rect class="gold" x="164" y="123" width="8" height="4" rx="2"/>
+
+  <text x="117" y="158" class="white shieldText">AIMS</text>
+
+  <text x="330" y="104" class="gold aims">AIMS</text>
+  <text x="330" y="165" class="teal english">English</text>
+</svg>

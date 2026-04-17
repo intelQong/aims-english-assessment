@@ -49,14 +49,13 @@ nav {
 .nav-logo { display:flex; align-items:center; gap:10px; font-family: var(--serif); font-size: 20px; color: var(--accent-dark); letter-spacing: -0.01em; }
 .nav-logo span { color: var(--accent-mid); }
 .nav-logo-text { display:inline-block; }
-.aims-logo-mark {
-  width: 30px; height: 30px; border-radius: 8px;
-  display: none; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; letter-spacing: .03em;
-  color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent-mid));
-  box-shadow: 0 2px 8px rgba(15,110,86,.25);
+.aims-logo-img {
+  display: none;
+  height: 38px;
+  width: auto;
 }
-.nav-logo.aims-branding .aims-logo-mark { display: inline-flex; }
+.nav-logo.aims-branding .aims-logo-img { display: block; }
+.nav-logo.aims-branding .nav-logo-text { display: none; }
 
 .nav-meta { font-size: 12px; color: var(--text-muted); }
 
@@ -393,6 +392,7 @@ textarea.q-textarea::placeholder { color: var(--text-subtle); }
   .q-card { padding: 20px; }
   .results-grid { grid-template-columns: 1fr; }
   .hero-sub { font-size: 15px; }
+  .aims-logo-img { height: 32px; }
 }
 
 @media (max-width: 480px) {
@@ -406,7 +406,7 @@ textarea.q-textarea::placeholder { color: var(--text-subtle); }
 <!-- NAV -->
 <nav>
   <div class="nav-logo" id="nav-logo">
-    <div class="aims-logo-mark" id="aims-logo-mark" aria-hidden="true">AE</div>
+    <img class="aims-logo-img" src="assets/aims-english-logo.svg" alt="AIMS English Logo">
     <div class="nav-logo-text" id="nav-logo-text">Edu<span>Band</span></div>
   </div>
   <div class="nav-meta" id="nav-meta">IELTS Band Score · CEFR Aligned</div>
@@ -623,7 +623,6 @@ function renderBranding(){
 
   if(state.aimsBranding){
     navLogo.classList.add('aims-branding');
-    logoText.innerHTML = 'AIMS <span>English</span>';
   } else {
     navLogo.classList.remove('aims-branding');
     logoText.innerHTML = 'Edu<span>Band</span>';
