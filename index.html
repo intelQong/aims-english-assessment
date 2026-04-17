@@ -409,6 +409,10 @@ textarea.q-textarea::placeholder { color: var(--text-subtle); }
         <span class="hero-cta-arrow">→</span>
       </button>
       <div class="hero-trust">No sign-up required · 25–30 minutes · Instant results</div>
+      <label class="branding-toggle" for="toggle-aims-branding">
+        <input type="checkbox" id="toggle-aims-branding" onchange="toggleAimsBranding(this.checked)">
+        Show AIMS English logo branding
+      </label>
     </div>
     <div class="hero-right">
       <div class="hero-card-stack">
@@ -593,7 +597,7 @@ const SECTIONS = [
   ]},
 ];
 
-const state = { secIdx:0, qIdx:0, answers:{}, timerInterval:null, timeLeft:0 };
+const state = { secIdx:0, qIdx:0, answers:{}, timerInterval:null, timeLeft:0, aimsBranding:false };
 const sKey = (s,q) => s+'-'+q;
 
 
@@ -805,6 +809,7 @@ function showResults(){
     });
   },100);
 }
+initBrandingOption();
 </script>
 </body>
 </html>
