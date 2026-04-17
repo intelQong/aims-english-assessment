@@ -46,8 +46,17 @@ nav {
   background: rgba(250,250,248,0.88); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
-.nav-logo { font-family: var(--serif); font-size: 20px; color: var(--accent-dark); letter-spacing: -0.01em; }
+.nav-logo { display:flex; align-items:center; gap:10px; font-family: var(--serif); font-size: 20px; color: var(--accent-dark); letter-spacing: -0.01em; }
 .nav-logo span { color: var(--accent-mid); }
+.nav-logo-text { display:inline-block; }
+.aims-logo-img {
+  display: none;
+  height: 38px;
+  width: auto;
+}
+.nav-logo.aims-branding .aims-logo-img { display: block; }
+.nav-logo.aims-branding .nav-logo-text { display: none; }
+
 .nav-meta { font-size: 12px; color: var(--text-muted); }
 
 /* SCREENS */
@@ -101,6 +110,11 @@ nav {
 
 .hero-trust { margin-top: 20px; font-size: 12px; color: var(--text-subtle); display: flex; align-items: center; gap: 6px; }
 .hero-trust::before { content: '✓'; color: var(--accent-mid); font-weight: 600; }
+.branding-toggle {
+  margin-top: 18px; display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--text-muted); user-select: none;
+}
+.branding-toggle input { accent-color: var(--accent); cursor: pointer; }
 
 .hero-right { display: flex; justify-content: center; align-items: center; }
 .hero-card-stack { position: relative; width: 320px; height: 360px; }
@@ -378,6 +392,7 @@ textarea.q-textarea::placeholder { color: var(--text-subtle); }
   .q-card { padding: 20px; }
   .results-grid { grid-template-columns: 1fr; }
   .hero-sub { font-size: 15px; }
+  .aims-logo-img { height: 32px; }
 }
 
 @media (max-width: 480px) {
@@ -390,7 +405,10 @@ textarea.q-textarea::placeholder { color: var(--text-subtle); }
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">Edu<span>Band</span></div>
+  <div class="nav-logo" id="nav-logo">
+    <img class="aims-logo-img" src="assets/aims-english-logo.svg" alt="AIMS English Logo">
+    <div class="nav-logo-text" id="nav-logo-text">Edu<span>Band</span></div>
+  </div>
   <div class="nav-meta" id="nav-meta">IELTS Band Score · CEFR Aligned</div>
 </nav>
 
@@ -406,6 +424,10 @@ textarea.q-textarea::placeholder { color: var(--text-subtle); }
         <span class="hero-cta-arrow">→</span>
       </button>
       <div class="hero-trust">No sign-up required · 25–30 minutes · Instant results</div>
+      <label class="branding-toggle" for="toggle-aims-branding">
+        <input type="checkbox" id="toggle-aims-branding" onchange="toggleAimsBranding(this.checked)">
+        Show AIMS English logo branding
+      </label>
     </div>
     <div class="hero-right">
       <div class="hero-card-stack">
@@ -590,8 +612,36 @@ const SECTIONS = [
   ]},
 ];
 
-const state = { secIdx:0, qIdx:0, answers:{}, timerInterval:null, timeLeft:0 };
+const state = { secIdx:0, qIdx:0, answers:{}, timerInterval:null, timeLeft:0, aimsBranding:false };
 const sKey = (s,q) => s+'-'+q;
+
+
+function renderBranding(){
+  const navLogo = document.getElementById('nav-logo');
+  const logoText = document.getElementById('nav-logo-text');
+  if(!navLogo || !logoText) return;
+
+  if(state.aimsBranding){
+    navLogo.classList.add('aims-branding');
+  } else {
+    navLogo.classList.remove('aims-branding');
+    logoText.innerHTML = 'Edu<span>Band</span>';
+  }
+}
+
+function toggleAimsBranding(enabled){
+  state.aimsBranding = enabled;
+  localStorage.setItem('aims-branding-enabled', enabled ? '1' : '0');
+  renderBranding();
+}
+
+function initBrandingOption(){
+  const enabled = localStorage.getItem('aims-branding-enabled') === '1';
+  state.aimsBranding = enabled;
+  const toggle = document.getElementById('toggle-aims-branding');
+  if(toggle) toggle.checked = enabled;
+  renderBranding();
+}
 
 function startTest(){
   document.getElementById('screen-cover').classList.remove('active');
@@ -801,6 +851,7 @@ function showResults(){
     });
   },100);
 }
+initBrandingOption();
 </script>
 </body>
 </html>
