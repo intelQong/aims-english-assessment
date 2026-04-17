@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 92" role="img" aria-labelledby="title desc">
+  <title id="title">AIMS English Logo</title>
+  <desc id="desc">AIMS English logo with shield emblem and two-line wordmark.</desc>
+
+  <defs>
+    <style>
+      .gold { fill: #c99a2b; }
+      .teal { fill: #0f7f99; }
+      .white { fill: #fff; }
+      .aims { font-family: Georgia, 'Times New Roman', serif; font-size: 44px; font-weight: 700; letter-spacing: 0.5px; }
+      .english { font-family: Georgia, 'Times New Roman', serif; font-size: 28px; font-weight: 700; letter-spacing: 1.2px; }
+      .shield-text { font-family: Georgia, 'Times New Roman', serif; font-size: 17px; font-weight: 700; }
+    </style>
+  </defs>
+
+  <!-- ribbon -->
+  <path class="gold" d="M6 57 l17-3 0 10 -10 2 1 4 -12 2 2-6 -2-6 z"/>
+  <path class="gold" d="M96 54 l17 3 2 3 -2 6 2 6 -12-2 1-4 -10-2 z"/>
+
+  <!-- shield -->
+  <path class="teal" d="M24 25c4 0 6-2 6-5h54c0 3 2 5 6 5v27c0 25-19 32-33 34-14-2-33-9-33-34z"/>
+
+  <!-- cap -->
+  <polygon class="white" points="49,30 57,26 65,30 57,34"/>
+  <rect class="white" x="49" y="31" width="1.5" height="5"/>
+  <path class="white" d="M53 34 q4 2 8 0 v2 q-4 2-8 0z"/>
+
+  <!-- book -->
+  <path class="white" d="M35 50q11-7 20 7q-10-3-20-2z"/>
+  <path class="white" d="M79 50q-11-7-20 7q10-3 20-2z"/>
+  <rect class="gold" x="56" y="56.5" width="2.6" height="1.7" rx="0.8"/>
+  <text x="42.5" y="67.8" class="white shield-text">AIMS</text>
+
+  <!-- wordmark -->
+  <text x="112" y="50" class="gold aims">AIMS</text>
+  <text x="112" y="78" class="teal english">English</text>
+</svg>
