@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EduBand · English Proficiency Test</title>
+<title>AIMS English · English Proficiency Test</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -46,8 +46,9 @@ nav {
   background: rgba(250,250,248,0.88); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
-.nav-logo { font-family: var(--serif); font-size: 20px; color: var(--accent-dark); letter-spacing: -0.01em; }
-.nav-logo span { color: var(--accent-mid); }
+.nav-logo { display:flex; align-items:center; }
+.aims-logo-img { height: 38px; width: auto; }
+
 .nav-meta { font-size: 12px; color: var(--text-muted); }
 
 /* SCREENS */
@@ -87,6 +88,19 @@ nav {
 .hero-h1 em { font-style: italic; color: var(--accent-mid); }
 .hero-sub { font-size: 16px; color: var(--text-muted); line-height: 1.7; max-width: 420px; margin-bottom: 36px; }
 
+.test-mode-card {
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  max-width: 420px;
+  margin-bottom: 18px;
+}
+.test-mode-title { font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--text-subtle); margin-bottom: 10px; }
+.test-mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; }
+.test-mode-opt { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); }
+.test-mode-opt input { accent-color: var(--accent); }
+
 .hero-cta {
   display: inline-flex; align-items: center; gap: 10px;
   background: var(--accent); color: #fff;
@@ -101,7 +115,6 @@ nav {
 
 .hero-trust { margin-top: 20px; font-size: 12px; color: var(--text-subtle); display: flex; align-items: center; gap: 6px; }
 .hero-trust::before { content: '✓'; color: var(--accent-mid); font-weight: 600; }
-
 .hero-right { display: flex; justify-content: center; align-items: center; }
 .hero-card-stack { position: relative; width: 320px; height: 360px; }
 .hcard {
@@ -378,6 +391,7 @@ textarea.q-textarea::placeholder { color: var(--text-subtle); }
   .q-card { padding: 20px; }
   .results-grid { grid-template-columns: 1fr; }
   .hero-sub { font-size: 15px; }
+  .aims-logo-img { height: 32px; }
 }
 
 @media (max-width: 480px) {
@@ -390,7 +404,9 @@ textarea.q-textarea::placeholder { color: var(--text-subtle); }
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">Edu<span>Band</span></div>
+  <div class="nav-logo">
+    <img class="aims-logo-img" src="assets/aims-english-logo.svg" alt="AIMS English Logo">
+  </div>
   <div class="nav-meta" id="nav-meta">IELTS Band Score · CEFR Aligned</div>
 </nav>
 
@@ -401,6 +417,15 @@ textarea.q-textarea::placeholder { color: var(--text-subtle); }
       <div class="hero-eyebrow">IELTS Band Score Aligned</div>
       <h1 class="hero-h1">Test Your <em>English</em> Proficiency</h1>
       <p class="hero-sub">A comprehensive 4-section assessment mapped to IELTS band scores and the Common European Framework of Reference (CEFR). Get your results instantly.</p>
+      <div class="test-mode-card">
+        <div class="test-mode-title">Choose sections (partial test supported)</div>
+        <div class="test-mode-grid">
+          <label class="test-mode-opt"><input type="checkbox" class="section-pick" value="reading" checked> Reading</label>
+          <label class="test-mode-opt"><input type="checkbox" class="section-pick" value="listening" checked> Listening</label>
+          <label class="test-mode-opt"><input type="checkbox" class="section-pick" value="grammar" checked> Grammar</label>
+          <label class="test-mode-opt"><input type="checkbox" class="section-pick" value="writing" checked> Writing</label>
+        </div>
+      </div>
       <button class="hero-cta" onclick="startTest()">
         Start Free Test
         <span class="hero-cta-arrow">→</span>
@@ -590,19 +615,36 @@ const SECTIONS = [
   ]},
 ];
 
-const state = { secIdx:0, qIdx:0, answers:{}, timerInterval:null, timeLeft:0 };
+const state = { secIdx:0, qIdx:0, answers:{}, timerInterval:null, timeLeft:0, activeSectionIds:SECTIONS.map(s=>s.id) };
 const sKey = (s,q) => s+'-'+q;
 
+function getActiveSections(){
+  return SECTIONS.filter(sec=>state.activeSectionIds.includes(sec.id));
+}
+
+function getPickedSectionIds(){
+  return Array.from(document.querySelectorAll('.section-pick:checked')).map(el=>el.value);
+}
+
+
 function startTest(){
+  const picked = getPickedSectionIds();
+  if(picked.length===0){
+    alert('Please select at least one section to start the test.');
+    return;
+  }
+  state.activeSectionIds = picked;
   document.getElementById('screen-cover').classList.remove('active');
   document.getElementById('screen-test').classList.add('active');
-  document.getElementById('nav-meta').textContent = 'Section 1 of 4 · Reading';
+  const sections = getActiveSections();
+  document.getElementById('nav-meta').textContent = 'Section 1 of '+sections.length+' · '+sections[0].label;
   state.secIdx=0; state.qIdx=0; state.answers={};
   loadSection();
 }
 
 function loadSection(){
-  const sec = SECTIONS[state.secIdx];
+  const sections = getActiveSections();
+  const sec = sections[state.secIdx];
   clearInterval(state.timerInterval);
   state.timeLeft = sec.time;
   updateTimer();
@@ -612,7 +654,7 @@ function loadSection(){
     if(state.timeLeft<=0){ clearInterval(state.timerInterval); nextSectionOrEnd(); }
   },1000);
   document.getElementById('sec-title').textContent = sec.icon + ' ' + sec.label;
-  document.getElementById('nav-meta').textContent = 'Section '+(state.secIdx+1)+' of '+SECTIONS.length+' · '+sec.label;
+  document.getElementById('nav-meta').textContent = 'Section '+(state.secIdx+1)+' of '+sections.length+' · '+sec.label;
   renderTabs(); renderQuestion();
 }
 
@@ -624,16 +666,20 @@ function updateTimer(){
 }
 
 function renderTabs(){
+  const sections = getActiveSections();
   document.getElementById('sec-tabs').innerHTML = SECTIONS.map((sec,i)=>{
     let cls='sec-tab';
-    if(i===state.secIdx) cls+=' active';
-    else if(i<state.secIdx) cls+=' done';
+    const activeIdx = sections.findIndex(s=>s.id===sec.id);
+    if(activeIdx===-1) return '';
+    if(activeIdx===state.secIdx) cls+=' active';
+    else if(activeIdx<state.secIdx) cls+=' done';
     return `<div class="${cls}">${sec.icon} ${sec.label}</div>`;
   }).join('');
 }
 
 function renderQuestion(){
-  const sec=SECTIONS[state.secIdx], q=sec.questions[state.qIdx];
+  const sections = getActiveSections();
+  const sec=sections[state.secIdx], q=sec.questions[state.qIdx];
   const total=sec.questions.length;
   document.getElementById('prog-fill').style.width=((state.qIdx/total)*100)+'%';
   document.getElementById('q-counter').textContent='Question '+(state.qIdx+1)+' of '+total;
@@ -671,7 +717,7 @@ function renderQuestion(){
   html+=`</div>`;
   document.getElementById('question-area').innerHTML=html;
 
-  const isLastSec=state.secIdx===SECTIONS.length-1;
+  const isLastSec=state.secIdx===sections.length-1;
   const isLastQ=state.qIdx===sec.questions.length-1;
   document.getElementById('btn-next-label').textContent= isLastSec&&isLastQ?'Submit Test':(isLastQ?'Next Section':'Next');
 }
@@ -679,7 +725,7 @@ function renderQuestion(){
 function updateWC(el){
   const key=sKey(state.secIdx,state.qIdx);
   state.answers[key]=el.value;
-  const q=SECTIONS[state.secIdx].questions[state.qIdx];
+  const q=getActiveSections()[state.secIdx].questions[state.qIdx];
   const wc=el.value.trim().split(/\s+/).filter(w=>w).length;
   const pct=Math.min(100,Math.round((wc/q.minWords)*100));
   document.getElementById('wc-display').textContent=wc+' / '+q.minWords+'+ words';
@@ -692,7 +738,7 @@ function selectOpt(i){
 }
 
 function nextStep(){
-  const sec=SECTIONS[state.secIdx], q=sec.questions[state.qIdx];
+  const sec=getActiveSections()[state.secIdx], q=sec.questions[state.qIdx];
   if(q.type==='writing'){
     const ta=document.getElementById('writing-area');
     if(ta) state.answers[sKey(state.secIdx,state.qIdx)]=ta.value;
@@ -703,13 +749,14 @@ function nextStep(){
 
 function nextSectionOrEnd(){
   clearInterval(state.timerInterval);
-  if(state.secIdx<SECTIONS.length-1){ state.secIdx++; state.qIdx=0; loadSection(); }
+  if(state.secIdx<getActiveSections().length-1){ state.secIdx++; state.qIdx=0; loadSection(); }
   else showResults();
 }
 
 function calcScores(){
   const sc={};
-  SECTIONS.forEach((sec,si)=>{
+  const sections = getActiveSections();
+  sections.forEach((sec,si)=>{
     if(sec.id==='writing'){
       const text=state.answers[sKey(si,0)]||'';
       const wc=text.trim().split(/\s+/).filter(w=>w).length;
@@ -721,7 +768,8 @@ function calcScores(){
       sc[sec.id]= pct>=.9?8.0:pct>=.8?7.0:pct>=.67?6.0:pct>=.5?5.0:pct>=.33?4.0:3.0;
     }
   });
-  sc.overall=Math.round(((sc.reading+sc.listening+sc.grammar+sc.writing)/4)*2)/2;
+  const sectionBands = sections.map(sec=>sc[sec.id]).filter(v=>v!==undefined);
+  sc.overall=Math.round((sectionBands.reduce((a,b)=>a+b,0)/sectionBands.length)*2)/2;
   return sc;
 }
 
@@ -749,7 +797,7 @@ function showResults(){
     {id:'listening',label:'Listening',icon:'🎧'},
     {id:'grammar',label:'Grammar',icon:'✏️'},
     {id:'writing',label:'Writing',icon:'📝'},
-  ];
+  ].filter(item=>state.activeSectionIds.includes(item.id));
 
   const skillCards=skillMap.map(({id,label,icon})=>{
     const b=sc[id]; const pct=Math.min(100,Math.round((b/9)*100));
