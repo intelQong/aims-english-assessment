@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduBand · English Proficiency Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --accent: #0F6E56;
+  --accent-mid: #1D9E75;
+  --accent-light: #E1F5EE;
+  --accent-pale: #f0fbf7;
+  --accent-dark: #04342C;
+  --danger: #D85A30;
+  --danger-light: #FAECE7;
+  --warn: #BA7517;
+  --warn-light: #FAEEDA;
+  --text: #1a1a1a;
+  --text-muted: #6b7280;
+  --text-subtle: #9ca3af;
+  --bg: #fafaf8;
+  --bg-card: #ffffff;
+  --bg-surface: #f4f4f1;
+  --border: rgba(0,0,0,0.09);
+  --border-strong: rgba(0,0,0,0.15);
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.10);
+}
+
+html { font-size: 16px; scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; height: 64px;
+  background: rgba(250,250,248,0.88); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: var(--serif); font-size: 20px; color: var(--accent-dark); letter-spacing: -0.01em; }
+.nav-logo span { color: var(--accent-mid); }
+.nav-meta { font-size: 12px; color: var(--text-muted); }
+
+/* SCREENS */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ======================== COVER ======================== */
+#screen-cover {
+  min-height: 100vh;
+  display: none;
+  flex-direction: column;
+  padding-top: 64px;
+}
+#screen-cover.active { display: flex; }
+
+.hero {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 80px 40px 60px;
+  align-items: center;
+  width: 100%;
+}
+
+.hero-left {}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent-light); color: var(--accent);
+  font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 20px; margin-bottom: 24px;
+}
+.hero-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-mid); }
+.hero-h1 { font-family: var(--serif); font-size: 52px; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
+.hero-h1 em { font-style: italic; color: var(--accent-mid); }
+.hero-sub { font-size: 16px; color: var(--text-muted); line-height: 1.7; max-width: 420px; margin-bottom: 36px; }
+
+.hero-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--accent); color: #fff;
+  font-size: 15px; font-weight: 500; font-family: var(--sans);
+  padding: 16px 32px; border-radius: 50px; border: none; cursor: pointer;
+  transition: transform .18s, box-shadow .18s;
+  text-decoration: none;
+}
+.hero-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(15,110,86,0.3); }
+.hero-cta-arrow { font-size: 18px; transition: transform .18s; }
+.hero-cta:hover .hero-cta-arrow { transform: translateX(4px); }
+
+.hero-trust { margin-top: 20px; font-size: 12px; color: var(--text-subtle); display: flex; align-items: center; gap: 6px; }
+.hero-trust::before { content: '✓'; color: var(--accent-mid); font-weight: 600; }
+
+.hero-right { display: flex; justify-content: center; align-items: center; }
+.hero-card-stack { position: relative; width: 320px; height: 360px; }
+.hcard {
+  position: absolute;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+.hcard-main {
+  width: 280px; bottom: 0; left: 20px;
+  box-shadow: var(--shadow-lg);
+}
+.hcard-back {
+  width: 260px; top: 20px; left: 0;
+  transform: rotate(-4deg);
+  background: var(--accent-pale);
+  border-color: rgba(29,158,117,0.2);
+}
+.hcard-back2 {
+  width: 260px; top: 10px; right: 0;
+  transform: rotate(3deg);
+  background: #fffdf0;
+  border-color: rgba(186,117,23,0.2);
+}
+.hcard-band { font-family: var(--serif); font-size: 36px; color: var(--accent); }
+.hcard-label { font-size: 11px; color: var(--text-muted); margin-bottom: 12px; }
+.hcard-bars { display: flex; flex-direction: column; gap: 8px; }
+.hbar-row { display: flex; align-items: center; gap: 8px; }
+.hbar-name { font-size: 11px; color: var(--text-muted); width: 60px; }
+.hbar-bg { flex: 1; height: 5px; background: var(--bg-surface); border-radius: 3px; overflow: hidden; }
+.hbar-fill { height: 100%; border-radius: 3px; background: var(--accent-mid); }
+.hbar-val { font-size: 11px; font-weight: 500; color: var(--text); width: 20px; text-align: right; }
+
+.section-grid {
+  max-width: 1100px; margin: 0 auto; padding: 0 40px 80px;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+}
+.sec-info-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px;
+  transition: box-shadow .18s, transform .18s;
+}
+.sec-info-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+.sic-icon { font-size: 24px; margin-bottom: 10px; }
+.sic-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.sic-meta { font-size: 12px; color: var(--text-muted); }
+.sic-badge {
+  display: inline-block; margin-top: 10px;
+  font-size: 10px; font-weight: 500; letter-spacing: .04em;
+  padding: 3px 10px; border-radius: 20px;
+  background: var(--accent-light); color: var(--accent);
+}
+
+/* ======================== TEST SCREEN ======================== */
+#screen-test {
+  min-height: 100vh;
+  padding-top: 64px;
+  display: none;
+}
+#screen-test.active { display: block; }
+
+.test-layout {
+  max-width: 820px; margin: 0 auto; padding: 40px 24px 80px;
+}
+
+.test-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 28px;
+}
+.test-sec-label {
+  font-family: var(--serif); font-size: 26px;
+}
+.timer-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--accent-light); color: var(--accent-dark);
+  padding: 8px 18px; border-radius: 50px; font-size: 15px; font-weight: 500;
+  font-variant-numeric: tabular-nums; transition: background .3s, color .3s;
+}
+.timer-pill.warn { background: var(--warn-light); color: var(--warn); }
+.timer-pill.danger { background: var(--danger-light); color: var(--danger); }
+.timer-pill-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; animation: pulse 1.4s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.sec-tabs { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
+.sec-tab {
+  padding: 6px 16px; border-radius: 50px;
+  border: 1px solid var(--border); font-size: 12px; font-weight: 500;
+  color: var(--text-muted); background: transparent;
+}
+.sec-tab.done { background: var(--accent-light); color: var(--accent); border-color: transparent; }
+.sec-tab.active { background: var(--accent); color: #fff; border-color: transparent; }
+
+.prog-track { height: 3px; background: var(--bg-surface); border-radius: 3px; margin-bottom: 36px; overflow: hidden; }
+.prog-fill { height: 100%; background: var(--accent-mid); border-radius: 3px; transition: width .4s cubic-bezier(.4,0,.2,1); }
+
+.q-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 32px;
+  box-shadow: var(--shadow); animation: slideIn .25s ease;
+}
+@keyframes slideIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+.q-level-tag {
+  display: inline-block; font-size: 10px; font-weight: 600;
+  letter-spacing: .07em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 20px;
+  background: var(--accent-light); color: var(--accent); margin-bottom: 16px;
+}
+.q-num-label { font-size: 12px; color: var(--text-subtle); margin-bottom: 4px; }
+.q-passage {
+  background: var(--accent-pale);
+  border-left: 3px solid var(--accent-mid);
+  border-radius: 0 10px 10px 0;
+  padding: 16px 18px; font-size: 14px; line-height: 1.75;
+  color: var(--text-muted); margin-bottom: 20px;
+}
+.q-passage strong { color: var(--text); }
+.q-text { font-size: 16px; line-height: 1.65; font-weight: 500; margin-bottom: 20px; }
+
+.options { display: flex; flex-direction: column; gap: 10px; }
+.opt {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; border: 1.5px solid var(--border);
+  border-radius: var(--radius); cursor: pointer; font-size: 14px; line-height: 1.5;
+  background: #fff; transition: all .14s; user-select: none;
+}
+.opt:hover { border-color: var(--accent-mid); background: var(--accent-pale); }
+.opt.selected { border-color: var(--accent-mid); background: var(--accent-pale); }
+.opt.correct { border-color: var(--accent); background: var(--accent-light); }
+.opt.wrong { border-color: var(--danger); background: var(--danger-light); }
+.opt-bubble {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  border: 1.5px solid var(--border-strong); display: flex;
+  align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: var(--text-muted);
+  transition: all .14s;
+}
+.opt.selected .opt-bubble { background: var(--accent-mid); border-color: var(--accent-mid); color: #fff; }
+.opt.correct .opt-bubble { background: var(--accent); border-color: var(--accent); color: #fff; }
+.opt.wrong .opt-bubble { background: var(--danger); border-color: var(--danger); color: #fff; }
+
+textarea.q-textarea {
+  width: 100%; border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius); padding: 16px;
+  font-family: var(--sans); font-size: 15px; line-height: 1.7;
+  resize: vertical; min-height: 160px;
+  color: var(--text); background: #fff;
+  transition: border-color .14s;
+}
+textarea.q-textarea:focus { outline: none; border-color: var(--accent-mid); }
+textarea.q-textarea::placeholder { color: var(--text-subtle); }
+.wc-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+.wc-display { font-size: 12px; color: var(--text-subtle); }
+.wc-bar-wrap { flex: 1; max-width: 120px; margin-left: 12px; height: 3px; background: var(--bg-surface); border-radius: 3px; overflow: hidden; }
+.wc-bar { height: 100%; background: var(--accent-mid); border-radius: 3px; transition: width .3s; }
+
+.nav-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 24px;
+}
+.q-counter-txt { font-size: 13px; color: var(--text-muted); }
+.btn-next {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--accent); color: #fff; border: none;
+  border-radius: 50px; padding: 13px 28px;
+  font-size: 14px; font-weight: 500; font-family: var(--sans);
+  cursor: pointer; transition: transform .15s, box-shadow .15s;
+}
+.btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,110,86,.28); }
+
+/* ======================== RESULTS ======================== */
+#screen-results {
+  min-height: 100vh; padding-top: 64px;
+  display: none;
+}
+#screen-results.active { display: block; }
+
+.results-layout {
+  max-width: 820px; margin: 0 auto; padding: 48px 24px 80px;
+}
+
+.result-hero { text-align: center; margin-bottom: 48px; }
+.result-eyebrow {
+  display: inline-block;
+  font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 28px;
+}
+.band-ring {
+  width: 150px; height: 150px; border-radius: 50%;
+  border: 3px solid var(--accent-mid);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 0 0 8px var(--accent-light), 0 0 0 16px rgba(29,158,117,0.07);
+  animation: ringPop .5s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes ringPop { from{transform:scale(.6);opacity:0} to{transform:scale(1);opacity:1} }
+.band-big { font-family: var(--serif); font-size: 56px; line-height: 1; }
+.band-small-label { font-size: 11px; color: var(--text-muted); letter-spacing: .06em; text-transform: uppercase; }
+.cefr-chip {
+  display: inline-block;
+  background: var(--accent-light); color: var(--accent-dark);
+  font-size: 14px; font-weight: 600;
+  padding: 6px 20px; border-radius: 50px; margin-bottom: 12px;
+}
+.result-desc {
+  font-size: 15px; color: var(--text-muted);
+  max-width: 440px; margin: 0 auto 0; line-height: 1.7;
+}
+
+.results-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px;
+}
+.skill-result-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px 22px;
+  box-shadow: var(--shadow);
+}
+.src-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.src-name { font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--text-muted); }
+.src-band { font-size: 22px; font-weight: 600; }
+.src-bar-bg { height: 5px; background: var(--bg-surface); border-radius: 3px; overflow: hidden; margin-bottom: 6px; }
+.src-bar-fill { height: 100%; border-radius: 3px; transition: width 1s cubic-bezier(.4,0,.2,1); }
+.src-score-detail { font-size: 11px; color: var(--text-subtle); }
+
+.feedback-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+.feedback-card-title {
+  font-size: 13px; font-weight: 600; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px;
+}
+.feedback-item {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+  font-size: 14px; line-height: 1.6; color: var(--text);
+}
+.feedback-item:last-child { border-bottom: none; }
+.fb-arrow { color: var(--accent-mid); font-weight: 600; flex-shrink: 0; margin-top: 1px; }
+
+.score-table {
+  width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 24px;
+}
+.score-table th {
+  text-align: left; font-size: 10px; font-weight: 600;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--text-subtle); padding: 0 0 10px; border-bottom: 1px solid var(--border);
+}
+.score-table td { padding: 10px 0; border-bottom: 1px solid var(--border); color: var(--text-muted); }
+.score-table td:first-child { color: var(--text); font-weight: 500; }
+.score-table td:last-child { text-align: right; font-weight: 600; }
+
+.retake-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; background: var(--accent); color: #fff;
+  border: none; border-radius: 50px; padding: 16px;
+  font-size: 15px; font-weight: 500; font-family: var(--sans);
+  cursor: pointer; transition: transform .15s, box-shadow .15s;
+}
+.retake-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(15,110,86,.28); }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .hero { grid-template-columns: 1fr; padding: 48px 20px 40px; }
+  .hero-right { display: none; }
+  .hero-h1 { font-size: 36px; }
+  .section-grid { grid-template-columns: 1fr 1fr; padding: 0 20px 60px; }
+  .test-layout, .results-layout { padding: 28px 16px 60px; }
+  .q-card { padding: 20px; }
+  .results-grid { grid-template-columns: 1fr; }
+  .hero-sub { font-size: 15px; }
+}
+
+@media (max-width: 480px) {
+  .section-grid { grid-template-columns: 1fr; }
+  .hero-h1 { font-size: 30px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Edu<span>Band</span></div>
+  <div class="nav-meta" id="nav-meta">IELTS Band Score · CEFR Aligned</div>
+</nav>
+
+<!-- ======================== COVER ======================== -->
+<div class="screen active" id="screen-cover">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">IELTS Band Score Aligned</div>
+      <h1 class="hero-h1">Test Your <em>English</em> Proficiency</h1>
+      <p class="hero-sub">A comprehensive 4-section assessment mapped to IELTS band scores and the Common European Framework of Reference (CEFR). Get your results instantly.</p>
+      <button class="hero-cta" onclick="startTest()">
+        Start Free Test
+        <span class="hero-cta-arrow">→</span>
+      </button>
+      <div class="hero-trust">No sign-up required · 25–30 minutes · Instant results</div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-card-stack">
+        <div class="hcard hcard-back2">
+          <div style="font-size:11px;color:#BA7517;font-weight:600;margin-bottom:6px;">GRAMMAR</div>
+          <div style="font-size:28px;font-family:var(--serif);color:#BA7517;">5.5</div>
+          <div style="font-size:11px;color:#9ca3af;">Band Score</div>
+        </div>
+        <div class="hcard hcard-back">
+          <div style="font-size:11px;color:var(--accent);font-weight:600;margin-bottom:6px;">READING</div>
+          <div style="font-size:28px;font-family:var(--serif);color:var(--accent);">7.0</div>
+          <div style="font-size:11px;color:#9ca3af;">Band Score</div>
+        </div>
+        <div class="hcard hcard-main">
+          <div class="hcard-band">6.5</div>
+          <div class="hcard-label">Overall IELTS Band · CEFR B2</div>
+          <div class="hcard-bars">
+            <div class="hbar-row"><span class="hbar-name">Reading</span><div class="hbar-bg"><div class="hbar-fill" style="width:78%"></div></div><span class="hbar-val">7.0</span></div>
+            <div class="hbar-row"><span class="hbar-name">Listening</span><div class="hbar-bg"><div class="hbar-fill" style="width:72%"></div></div><span class="hbar-val">6.5</span></div>
+            <div class="hbar-row"><span class="hbar-name">Grammar</span><div class="hbar-bg"><div class="hbar-fill" style="width:61%"></div></div><span class="hbar-val">5.5</span></div>
+            <div class="hbar-row"><span class="hbar-name">Writing</span><div class="hbar-bg"><div class="hbar-fill" style="width:67%"></div></div><span class="hbar-val">6.0</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-grid">
+    <div class="sec-info-card">
+      <div class="sic-icon">📖</div>
+      <div class="sic-title">Reading</div>
+      <div class="sic-meta">6 questions · B1 to C1 passages · Multiple choice &amp; inference</div>
+      <div class="sic-badge">8 minutes</div>
+    </div>
+    <div class="sec-info-card">
+      <div class="sic-icon">🎧</div>
+      <div class="sic-title">Listening</div>
+      <div class="sic-meta">5 questions · Transcript-based · Conversation &amp; lecture formats</div>
+      <div class="sic-badge">6 minutes</div>
+    </div>
+    <div class="sec-info-card">
+      <div class="sic-icon">✏️</div>
+      <div class="sic-title">Grammar</div>
+      <div class="sic-meta">6 questions · A2 to C1 · Tenses, conditionals, clause structure</div>
+      <div class="sic-badge">5 minutes</div>
+    </div>
+    <div class="sec-info-card">
+      <div class="sic-icon">📝</div>
+      <div class="sic-title">Writing</div>
+      <div class="sic-meta">1 essay task · 100–200 words · Scored on vocabulary &amp; coherence</div>
+      <div class="sic-badge">10 minutes</div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== TEST SCREEN ======================== -->
+<div class="screen" id="screen-test">
+  <div class="test-layout">
+    <div class="test-topbar">
+      <div class="test-sec-label" id="sec-title">Reading</div>
+      <div class="timer-pill" id="timer-display">
+        <div class="timer-pill-dot"></div>
+        <span id="timer-text">08:00</span>
+      </div>
+    </div>
+    <div class="sec-tabs" id="sec-tabs"></div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <div id="question-area"></div>
+    <div class="nav-row">
+      <span class="q-counter-txt" id="q-counter"></span>
+      <button class="btn-next" id="btn-next" onclick="nextStep()">
+        <span id="btn-next-label">Next</span>
+        <span>→</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== RESULTS SCREEN ======================== -->
+<div class="screen" id="screen-results">
+  <div class="results-layout" id="results-content"></div>
+</div>
+
+<script>
+const SECTIONS = [
+  { id:'reading', label:'Reading', icon:'📖', time:480, questions:[
+    { type:'mcq', level:'B1',
+      passage:'The Amazon rainforest, often called the "lungs of the Earth," produces roughly 20% of the world\'s oxygen through photosynthesis. It spans over 5.5 million square kilometres across nine countries, with Brazil hosting the largest portion. Scientists warn that continued deforestation could transform parts of the forest into a savanna within decades.',
+      text:'According to the passage, why is the Amazon called the "lungs of the Earth"?',
+      options:['It contains many animals','It produces a large share of the world\'s oxygen','It spans nine countries','It prevents flooding'],
+      answer:1 },
+    { type:'mcq', level:'B1',
+      passage:null,
+      text:'Which country contains the largest portion of the Amazon rainforest?',
+      options:['Colombia','Peru','Brazil','Venezuela'],
+      answer:2 },
+    { type:'mcq', level:'B2',
+      passage:'Remote work has fundamentally altered the traditional office model. While proponents argue it increases productivity and work-life balance, critics contend that collaboration and company culture suffer. A 2023 Stanford study found that fully remote workers were 10–20% less productive than in-office counterparts, yet reported higher job satisfaction scores.',
+      text:'What does the Stanford study suggest about fully remote workers?',
+      options:['They are more productive and less satisfied','They are less productive but more satisfied','They are equally productive but less satisfied','They are more productive and more satisfied'],
+      answer:1 },
+    { type:'mcq', level:'B2',
+      passage:null,
+      text:'Which of the following best describes the tone of the passage about remote work?',
+      options:['Strongly in favour of remote work','Strongly against remote work','Balanced, presenting multiple views','Focused only on productivity data'],
+      answer:2 },
+    { type:'mcq', level:'C1',
+      passage:'The advent of large language models has precipitated an epistemological crisis in scientific publishing. When AI can generate plausible-sounding abstracts indistinguishable from human-authored ones, the peer review process — long the cornerstone of academic credibility — faces unprecedented pressure. Some journals have responded by banning AI-generated text; others have mandated disclosure.',
+      text:'What does the author imply is the main threat posed by large language models to scientific publishing?',
+      options:['They make research faster to produce','They undermine the reliability of the peer review system','They improve the quality of academic abstracts','They reduce the number of journal submissions'],
+      answer:1 },
+    { type:'mcq', level:'C1',
+      passage:null,
+      text:'The word "precipitated" in the passage most closely means:',
+      options:['prevented','gradually reduced','brought about suddenly','carefully considered'],
+      answer:2 },
+  ]},
+  { id:'listening', label:'Listening', icon:'🎧', time:360, questions:[
+    { type:'mcq', level:'A2/B1',
+      passage:'[Transcript — Telephone call]\nReceptionist: "Good morning, City Library. How can I help you?"\nCaller: "Hi, I\'d like to know your opening hours on Saturdays."\nReceptionist: "We open at 9 a.m. and close at 5 p.m. on Saturdays. We\'re closed on Sundays."',
+      text:'What time does the library close on Saturdays?',
+      options:['4:00 p.m.','5:00 p.m.','6:00 p.m.','9:00 a.m.'],
+      answer:1 },
+    { type:'mcq', level:'B1',
+      passage:'[Transcript — Tour guide announcement]\n"Our next stop is the National Museum. Please remember that photography is not allowed inside the main galleries. You may take photos in the garden and the café area. The museum shop closes at 4:30, so if you\'d like to buy souvenirs, please plan accordingly."',
+      text:'Where is photography allowed according to the guide?',
+      options:['Main galleries only','The museum shop','The garden and café area','Nowhere in the museum'],
+      answer:2 },
+    { type:'mcq', level:'B2',
+      passage:'[Transcript — Job interview]\nInterviewer: "What skills do you think are most important for a project manager?"\nCandidate: "I\'d say communication is paramount — you need to align stakeholders who often have conflicting priorities. After that, I\'d highlight risk management: anticipating problems before they escalate is far more effective than reacting to them."',
+      text:'According to the candidate, what is the primary reason communication is essential for project managers?',
+      options:['To write reports quickly','To align stakeholders with competing interests','To manage budgets efficiently','To avoid hiring mistakes'],
+      answer:1 },
+    { type:'mcq', level:'B2',
+      passage:'[Transcript — University lecture]\nLecturer: "The Industrial Revolution did not simply transform manufacturing — it reorganised society itself. Urbanisation accelerated rapidly, family structures shifted as women and children entered factory work, and the concept of \'leisure time\' as distinct from work emerged for the first time among labouring classes."',
+      text:'Which social change does the lecturer NOT mention as a result of the Industrial Revolution?',
+      options:['Faster urbanisation','Changes in family structure','Decline of religious practice','The emergence of leisure time'],
+      answer:2 },
+    { type:'mcq', level:'C1',
+      passage:'[Transcript — Panel discussion]\nSpeaker A: "Artificial general intelligence may be decades away, but the economic disruption from narrow AI is already here."\nSpeaker B: "I\'d push back on that framing. Disruption implies destruction — what we\'re seeing is more of a reallocation of labour, which has happened in every major technological shift."',
+      text:'What is Speaker B\'s main objection to Speaker A\'s argument?',
+      options:['AGI is closer than Speaker A thinks','Narrow AI is not truly intelligent','The term "disruption" mischaracterises what is happening','Labour reallocation only happens in tech industries'],
+      answer:2 },
+  ]},
+  { id:'grammar', label:'Grammar', icon:'✏️', time:300, questions:[
+    { type:'mcq', level:'A2',
+      passage:null,
+      text:'Choose the grammatically correct sentence:',
+      options:['She don\'t like coffee.','She doesn\'t likes coffee.','She doesn\'t like coffee.','She not like coffee.'],
+      answer:2 },
+    { type:'mcq', level:'A2/B1',
+      passage:null,
+      text:'Fill in the blank: "By the time we arrived, the film _____ already started."',
+      options:['has','have','had','was'],
+      answer:2 },
+    { type:'mcq', level:'B1',
+      passage:null,
+      text:'Which sentence uses the passive voice correctly?',
+      options:['The manager wrote the report.','The report was written by the manager.','The report is write by the manager.','The manager has writing the report.'],
+      answer:1 },
+    { type:'mcq', level:'B2',
+      passage:null,
+      text:'Choose the correct conditional: "If she _____ harder, she might have passed the exam."',
+      options:['studies','studied','had studied','would study'],
+      answer:2 },
+    { type:'mcq', level:'B2',
+      passage:null,
+      text:'Select the sentence with the correct use of a relative clause:',
+      options:['The scientist who she discovered penicillin won a Nobel Prize.','The scientist which discovered penicillin won a Nobel Prize.','The scientist who discovered penicillin won a Nobel Prize.','The scientist whom discovered penicillin won a Nobel Prize.'],
+      answer:2 },
+    { type:'mcq', level:'C1',
+      passage:null,
+      text:'"Had the government intervened earlier, the crisis _____ averted." Choose the correct form:',
+      options:['could be','can have been','could have been','would be'],
+      answer:2 },
+  ]},
+  { id:'writing', label:'Writing', icon:'📝', time:600, questions:[
+    { type:'writing', level:'B2/C1',
+      passage:null,
+      text:'Write a short essay (100–200 words) on ONE of the following topics:\n\n(A) The advantages and disadvantages of social media for young people.\n\n(B) Should governments make public transport free for all citizens? Give reasons and examples.\n\nYour response will be assessed on: relevance to the topic, organisation of ideas, range and accuracy of vocabulary, and grammatical control.',
+      minWords:80 },
+  ]},
+];
+
+const state = { secIdx:0, qIdx:0, answers:{}, timerInterval:null, timeLeft:0 };
+const sKey = (s,q) => s+'-'+q;
+
+function startTest(){
+  document.getElementById('screen-cover').classList.remove('active');
+  document.getElementById('screen-test').classList.add('active');
+  document.getElementById('nav-meta').textContent = 'Section 1 of 4 · Reading';
+  state.secIdx=0; state.qIdx=0; state.answers={};
+  loadSection();
+}
+
+function loadSection(){
+  const sec = SECTIONS[state.secIdx];
+  clearInterval(state.timerInterval);
+  state.timeLeft = sec.time;
+  updateTimer();
+  state.timerInterval = setInterval(()=>{
+    state.timeLeft--;
+    updateTimer();
+    if(state.timeLeft<=0){ clearInterval(state.timerInterval); nextSectionOrEnd(); }
+  },1000);
+  document.getElementById('sec-title').textContent = sec.icon + ' ' + sec.label;
+  document.getElementById('nav-meta').textContent = 'Section '+(state.secIdx+1)+' of '+SECTIONS.length+' · '+sec.label;
+  renderTabs(); renderQuestion();
+}
+
+function updateTimer(){
+  const m=Math.floor(state.timeLeft/60), s=state.timeLeft%60;
+  document.getElementById('timer-text').textContent = m+':'+(s<10?'0':'')+s;
+  const el = document.getElementById('timer-display');
+  el.className = 'timer-pill'+(state.timeLeft<60?' danger':state.timeLeft<120?' warn':'');
+}
+
+function renderTabs(){
+  document.getElementById('sec-tabs').innerHTML = SECTIONS.map((sec,i)=>{
+    let cls='sec-tab';
+    if(i===state.secIdx) cls+=' active';
+    else if(i<state.secIdx) cls+=' done';
+    return `<div class="${cls}">${sec.icon} ${sec.label}</div>`;
+  }).join('');
+}
+
+function renderQuestion(){
+  const sec=SECTIONS[state.secIdx], q=sec.questions[state.qIdx];
+  const total=sec.questions.length;
+  document.getElementById('prog-fill').style.width=((state.qIdx/total)*100)+'%';
+  document.getElementById('q-counter').textContent='Question '+(state.qIdx+1)+' of '+total;
+  const key=sKey(state.secIdx,state.qIdx);
+  const saved=state.answers[key];
+  const letters=['A','B','C','D'];
+
+  let html=`<div class="q-card">
+    <div class="q-level-tag">Level ${q.level}</div>
+    <div class="q-num-label">Question ${state.qIdx+1}</div>`;
+
+  if(q.passage){
+    html+=`<div class="q-passage">${q.passage.replace(/\n/g,'<br>')}</div>`;
+  }
+  html+=`<div class="q-text">${q.text.replace(/\n/g,'<br>')}</div>`;
+
+  if(q.type==='mcq'){
+    html+=`<div class="options">`;
+    q.options.forEach((opt,i)=>{
+      let cls='opt';
+      if(saved!==undefined && saved===i) cls+=' selected';
+      html+=`<div class="${cls}" onclick="selectOpt(${i})"><div class="opt-bubble">${letters[i]}</div><span>${opt}</span></div>`;
+    });
+    html+=`</div>`;
+  } else if(q.type==='writing'){
+    const savedTxt=saved||'';
+    const wc=savedTxt.trim().split(/\s+/).filter(w=>w).length;
+    const wcPct=Math.min(100,Math.round((wc/q.minWords)*100));
+    html+=`<textarea class="q-textarea" id="writing-area" placeholder="Begin writing your essay here..." onkeyup="updateWC(this)">${savedTxt}</textarea>
+    <div class="wc-row">
+      <div class="wc-display" id="wc-display">${wc} / ${q.minWords}+ words</div>
+      <div class="wc-bar-wrap"><div class="wc-bar" id="wc-bar" style="width:${wcPct}%"></div></div>
+    </div>`;
+  }
+  html+=`</div>`;
+  document.getElementById('question-area').innerHTML=html;
+
+  const isLastSec=state.secIdx===SECTIONS.length-1;
+  const isLastQ=state.qIdx===sec.questions.length-1;
+  document.getElementById('btn-next-label').textContent= isLastSec&&isLastQ?'Submit Test':(isLastQ?'Next Section':'Next');
+}
+
+function updateWC(el){
+  const key=sKey(state.secIdx,state.qIdx);
+  state.answers[key]=el.value;
+  const q=SECTIONS[state.secIdx].questions[state.qIdx];
+  const wc=el.value.trim().split(/\s+/).filter(w=>w).length;
+  const pct=Math.min(100,Math.round((wc/q.minWords)*100));
+  document.getElementById('wc-display').textContent=wc+' / '+q.minWords+'+ words';
+  document.getElementById('wc-bar').style.width=pct+'%';
+}
+
+function selectOpt(i){
+  state.answers[sKey(state.secIdx,state.qIdx)]=i;
+  renderQuestion();
+}
+
+function nextStep(){
+  const sec=SECTIONS[state.secIdx], q=sec.questions[state.qIdx];
+  if(q.type==='writing'){
+    const ta=document.getElementById('writing-area');
+    if(ta) state.answers[sKey(state.secIdx,state.qIdx)]=ta.value;
+  }
+  if(state.qIdx<sec.questions.length-1){ state.qIdx++; renderQuestion(); }
+  else nextSectionOrEnd();
+}
+
+function nextSectionOrEnd(){
+  clearInterval(state.timerInterval);
+  if(state.secIdx<SECTIONS.length-1){ state.secIdx++; state.qIdx=0; loadSection(); }
+  else showResults();
+}
+
+function calcScores(){
+  const sc={};
+  SECTIONS.forEach((sec,si)=>{
+    if(sec.id==='writing'){
+      const text=state.answers[sKey(si,0)]||'';
+      const wc=text.trim().split(/\s+/).filter(w=>w).length;
+      sc.writing= wc>=150?7.0:wc>=100?6.0:wc>=80?5.5:wc>=50?5.0:4.0;
+    } else {
+      let correct=0;
+      sec.questions.forEach((q,qi)=>{ if(state.answers[sKey(si,qi)]===q.answer) correct++; });
+      const pct=correct/sec.questions.length;
+      sc[sec.id]= pct>=.9?8.0:pct>=.8?7.0:pct>=.67?6.0:pct>=.5?5.0:pct>=.33?4.0:3.0;
+    }
+  });
+  sc.overall=Math.round(((sc.reading+sc.listening+sc.grammar+sc.writing)/4)*2)/2;
+  return sc;
+}
+
+function getCEFR(b){
+  if(b>=8.5) return {level:'C2',desc:'Mastery — can express ideas fluently and precisely in even the most complex situations.'};
+  if(b>=7.0) return {level:'C1',desc:'Advanced — can understand demanding, longer texts and express ideas fluently with flexibility.'};
+  if(b>=5.5) return {level:'B2',desc:'Upper-intermediate — can understand the main ideas of complex text and interact with fluency.'};
+  if(b>=4.0) return {level:'B1',desc:'Intermediate — can handle most situations encountered in areas of travel, work, and personal interest.'};
+  return {level:'A2',desc:'Elementary — can communicate in simple, routine tasks on familiar topics and situations.'};
+}
+
+function bandColor(b){ return b>=7?'#0F6E56':b>=5.5?'#BA7517':'#D85A30'; }
+
+function showResults(){
+  document.getElementById('screen-test').classList.remove('active');
+  document.getElementById('screen-results').classList.add('active');
+  document.getElementById('nav-meta').textContent='Your Results';
+
+  const sc=calcScores();
+  const {level,desc}=getCEFR(sc.overall);
+  const col=bandColor(sc.overall);
+
+  const skillMap=[
+    {id:'reading',label:'Reading',icon:'📖'},
+    {id:'listening',label:'Listening',icon:'🎧'},
+    {id:'grammar',label:'Grammar',icon:'✏️'},
+    {id:'writing',label:'Writing',icon:'📝'},
+  ];
+
+  const skillCards=skillMap.map(({id,label,icon})=>{
+    const b=sc[id]; const pct=Math.min(100,Math.round((b/9)*100));
+    const c=bandColor(b);
+    return `<div class="skill-result-card">
+      <div class="src-header">
+        <div class="src-name">${icon} ${label}</div>
+        <div class="src-band" style="color:${c}">Band ${b.toFixed(1)}</div>
+      </div>
+      <div class="src-bar-bg"><div class="src-bar-fill" style="width:${pct}%;background:${c};"></div></div>
+      <div class="src-score-detail">IELTS band scale 1–9</div>
+    </div>`;
+  }).join('');
+
+  const fbItems=[];
+  if(sc.reading<6) fbItems.push('Practice reading longer, complex texts — focus on inference and understanding author intent, not just surface facts.');
+  if(sc.listening<6) fbItems.push('Improve your listening by engaging with English podcasts, TED talks, or lectures. Practise note-taking while listening.');
+  if(sc.grammar<6) fbItems.push('Review verb tenses, third conditional structures, relative clauses, and passive voice — these are common Band 5–6 weaknesses.');
+  if(sc.writing<6) fbItems.push('Focus on essay structure: a clear introduction, well-developed body paragraphs, and a conclusion. Aim for 150+ words with varied vocabulary.');
+  if(fbItems.length===0) fbItems.push('Strong performance! To reach Band 8+, focus on nuanced vocabulary choices, sophisticated argument structures, and reducing minor grammatical slips.');
+  fbItems.push('Consider taking a full-length IELTS practice test under timed conditions to simulate the real exam experience.');
+
+  document.getElementById('results-content').innerHTML=`
+    <div class="result-hero">
+      <div class="result-eyebrow">Test Complete · Results</div>
+      <div class="band-ring" style="border-color:${col};box-shadow:0 0 0 8px ${col}18, 0 0 0 16px ${col}08;">
+        <div class="band-big" style="color:${col}">${sc.overall.toFixed(1)}</div>
+        <div class="band-small-label">IELTS Band</div>
+      </div>
+      <div class="cefr-chip" style="background:${col}18;color:${col};">CEFR ${level}</div>
+      <p class="result-desc">${desc}</p>
+    </div>
+    <div class="results-grid">${skillCards}</div>
+    <div class="feedback-card">
+      <div class="feedback-card-title">Study Recommendations</div>
+      ${fbItems.map(f=>`<div class="feedback-item"><span class="fb-arrow">→</span>${f}</div>`).join('')}
+    </div>
+    <table class="score-table">
+      <tr><th>Section</th><th>CEFR Level</th><th>Band Score</th></tr>
+      ${skillMap.map(({id,label})=>`<tr><td>${label}</td><td>${getCEFR(sc[id]).level}</td><td style="color:${bandColor(sc[id])}">${sc[id].toFixed(1)}</td></tr>`).join('')}
+      <tr><td style="font-weight:700;font-size:14px;">Overall</td><td style="font-weight:700;">${level}</td><td style="font-weight:700;color:${col};font-size:15px;">${sc.overall.toFixed(1)}</td></tr>
+    </table>
+    <button class="retake-btn" onclick="location.reload()">↺ Retake the Test</button>
+  `;
+
+  setTimeout(()=>{
+    document.querySelectorAll('.src-bar-fill').forEach(el=>{
+      const w=el.style.width; el.style.width='0'; setTimeout(()=>el.style.width=w,50);
+    });
+  },100);
+}
+</script>
+</body>
+</html>
